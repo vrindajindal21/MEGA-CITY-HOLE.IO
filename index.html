@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>MEGA CITY HOLE.IO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loading Screen -->
+      <div id="loading-screen" class="overlay">
+        <h1 class="game-title">LOADING<br><span>CITY...</span></h1>
+        <div class="xp-bar-mini" style="width: 200px; height: 12px;"><div id="loading-fill" style="width: 100%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); animation: pulse 1.5s infinite;"></div></div>
+      </div>
+
+      <!-- Game Canvas Container -->
+      <div id="canvas-container"></div>
+
+      <div id="main-menu" class="overlay">
+        <div class="user-stats">
+          <div class="level-badge">LVL <span id="player-level">1</span></div>
+          <div class="xp-bar-mini"><div id="xp-fill"></div></div>
+        </div>
+        <h1 class="game-title">MEGA CITY<br><span>HOLE.IO</span></h1>
+        <div class="menu-content">
+          <button id="play-button" class="btn-primary">PLAY MATCH</button>
+          
+          <!-- Game Mode Selection -->
+          <div id="mode-selection" class="mode-selection hidden">
+            <h3>SELECT GAME MODE</h3>
+            <div class="modes-grid">
+              <button id="mode-solo" class="mode-card">
+                <div class="mode-icon">🎯</div>
+                <div class="mode-name">SOLO</div>
+                <div class="mode-desc">Consume 100% of the city</div>
+                <div class="mode-time">2 minutes</div>
+              </button>
+              <button id="mode-classic" class="mode-card">
+                <div class="mode-icon">🏆</div>
+                <div class="mode-name">CLASSIC</div>
+                <div class="mode-desc">Largest hole by time end</div>
+                <div class="mode-time">2 minutes</div>
+              </button>
+              <button id="mode-battle" class="mode-card">
+                <div class="mode-icon">⚔️</div>
+                <div class="mode-name">BATTLE</div>
+                <div class="mode-desc">Last hole standing</div>
+                <div class="mode-time">No time limit</div>
+              </button>
+            </div>
+            <button id="back-to-menu" class="btn-secondary">BACK</button>
+          </div>
+          <div class="upgrades-grid">
+            <div class="upgrade-card" id="upg-speed">
+              <span class="upg-label">SPEED</span>
+              <span class="upg-val">LVL 1</span>
+            </div>
+            <div class="upgrade-card" id="upg-size">
+              <span class="upg-label">SIZE</span>
+              <span class="upg-val">LVL 1</span>
+            </div>
+            <div class="upgrade-card" id="upg-suction">
+              <span class="upg-label">SUCTION</span>
+              <span class="upg-val">LVL 1</span>
+            </div>
+          </div>
+          <div class="menu-bottom">
+            <button id="skins-button" class="btn-secondary">SKINS</button>
+            <button id="maps-button" class="btn-secondary">MAPS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- In-Game HUD -->
+      <div id="game-hud" class="overlay hidden">
+        <div class="hud-top">
+          <div class="timer-container">
+            <span id="timer">01:30</span>
+          </div>
+          <div class="fever-container">
+            <div id="fever-bar"></div>
+            <span class="fever-label">FEVER</span>
+          </div>
+          <div class="leaderboard-mini">
+            <div class="mini-entry player">1. YOU - 0</div>
+            <div class="mini-entry">2. B0T_ALPHA - 0</div>
+            <div class="mini-entry">3. B0T_BETA - 0</div>
+          </div>
+        </div>
+        
+        <div class="hud-bottom">
+          <div class="growth-bar-container">
+            <div id="growth-bar"></div>
+            <div class="size-label">SIZE <span id="size-tier">1</span></div>
+          </div>
+          <div class="score-container">
+            <span id="score">0000</span>
+            <span id="solo-pct" class="hidden" style="font-size: 1rem; opacity: 0.7; margin-left: 5px;">0%</span>
+          </div>
+          <div class="coin-container">
+            <span class="coin-icon">🪙</span>
+            <span id="coins">0</span>
+          </div>
+        </div>
+
+        <!-- Combo Feedback -->
+        <div id="combo-feedback" class="combo-text">COMBO x2!</div>
+        
+        <!-- Growth Feedback -->
+        <div id="growth-feedback" class="growth-text">SIZE UP!</div>
+        
+        <!-- Size Milestone Indicator -->
+        <div id="size-milestone" class="milestone-text">
+          <div class="milestone-icon">🎯</div>
+          <div class="milestone-label">NEW TIER!</div>
+        </div>
+      </div>
+
+      <!-- End Screen -->
+      <div id="end-screen" class="overlay hidden">
+        <div class="end-content">
+          <div class="progression-summary">
+            <h2 id="end-rank">RANK #1</h2>
+            <p id="rank-context">You were 92% away from Rank #1</p>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">SCORE</span>
+              <span id="end-score" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">XP GAINED</span>
+              <span id="end-xp" class="stat-value">+0</span>
+            </div>
+          </div>
+          <div class="rewarded-cta">
+            <button id="revive-button" class="btn-rewarded">WATCH AD: REVIVE +30S</button>
+          </div>
+          <button id="again-button" class="btn-primary">INSTANT REPLAY</button>
+        </div>
+      </div>
+
+      <!-- Level Up Moment -->
+      <div id="level-up" class="moment hidden">
+        <h2>GIANT GROWTH!</h2>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
