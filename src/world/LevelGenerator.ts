@@ -79,6 +79,8 @@ export class LevelGenerator {
     tiers.push({ name: 'Car',         count: Math.floor(15 * countMultiplier),  w: 4.5, h: 2.2, d: 2.5, mass: 2000,  color: '#ffdd00', tierIdx: 2 });
     tiers.push({ name: 'Streetlight', count: Math.floor(20 * countMultiplier),  w: 1.0, h: 8.0, d: 1.0, mass: 500,   color: '#333',     tierIdx: 1 });
     tiers.push({ name: 'Bench',       count: Math.floor(25 * countMultiplier),  w: 3.5, h: 1.2, d: 1.5, mass: 400,   color: '#8B4513', tierIdx: 1 });
+    tiers.push({ name: 'Stall',       count: Math.floor(15 * countMultiplier),  w: 5.0, h: 4.0, d: 5.0, mass: 1200,  color: '#FFB7C5', tierIdx: 2 });
+    tiers.push({ name: 'Vendor',      count: Math.floor(12 * countMultiplier),  w: 4.0, h: 3.5, d: 4.0, mass: 1000,  color: '#E6E6FA', tierIdx: 2 });
 
     // Spawn items in organized clusters
     tiers.forEach(tier => {
@@ -175,10 +177,10 @@ export class LevelGenerator {
 
     // Mixed Themes for all levels
     const themes = [
-      { name: 'Bakery', colors: ['#FFFDD0', '#FFD1DC', '#E6E6FA'], items: ['House', 'Stall'] },
-      { name: 'Jungle', colors: ['#2D5A27', '#4A7C44', '#8B4513'], items: ['Tree', 'Rock'] },
-      { name: 'Winter', colors: ['#E0F7FA', '#B2EBF2', '#FFFFFF'], items: ['SnowTree', 'Igloo'] },
-      { name: 'SciFi',  colors: ['#000000', '#1A1A1A', '#00F2FF'], items: ['NeonTower', 'Pad'] }
+      { name: 'Bakery', colors: ['#FFFDD0', '#FFD1DC', '#E6E6FA'], items: ['House', 'Stall', 'Vendor'] },
+      { name: 'Jungle', colors: ['#2D5A27', '#4A7C44', '#8B4513'], items: ['Tree', 'Rock', 'Statue'] },
+      { name: 'Winter', colors: ['#E0F7FA', '#B2EBF2', '#FFFFFF'], items: ['SnowTree', 'Igloo', 'Snowman'] },
+      { name: 'SciFi',  colors: ['#000000', '#1A1A1A', '#00F2FF'], items: ['NeonTower', 'Pad', 'DronePod'] }
     ];
 
     const sceneryCount = 50 + level * 8;
@@ -368,6 +370,9 @@ export class LevelGenerator {
       const back = new THREE.Mesh(new THREE.BoxGeometry(tier.w, 1.0, 0.2), mat);
       back.position.set(0, 0.6, -tier.d/2);
       group.add(seat, back);
+    } else if (tier.name === 'Stall' || tier.name === 'Vendor') {
+      // Re-use the scenery logic for detailed stalls
+      return this.makeSceneryItem(tier.name, tier.color);
     } else {
       // Premium Edible Building
       const w = tier.w;
@@ -418,10 +423,11 @@ export class LevelGenerator {
       metalness: 0.5 
     });
 
-    if (type === 'Tree') {
+    if (type === 'Tree' || type === 'SnowTree') {
       const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 5, 8), new THREE.MeshStandardMaterial({ color: '#3d2b1f' }));
       trunk.position.y = 2.5;
-      const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(4), new THREE.MeshStandardMaterial({ color: '#2d5a27', roughness: 0.8 }));
+      const leafColor = type === 'SnowTree' ? '#ffffff' : '#2d5a27';
+      const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(4), new THREE.MeshStandardMaterial({ color: leafColor, roughness: 0.8 }));
       leaves.position.y = 7;
       group.add(trunk, leaves);
     } else if (type === 'NeonTower') {
@@ -436,6 +442,37 @@ export class LevelGenerator {
       const beacon = new THREE.Mesh(new THREE.SphereGeometry(2, 16, 16), new THREE.MeshStandardMaterial({ color: '#ff0000' }));
       beacon.position.y = h + 2;
       group.add(beacon);
+    } else if (type === 'Stall' || type === 'Vendor') {
+      const base = new THREE.Mesh(new THREE.BoxGeometry(8, 6, 8), mat);
+      base.position.y = 3;
+      const counter = new THREE.Mesh(new THREE.BoxGeometry(9, 0.5, 9), new THREE.MeshStandardMaterial({ color: '#333' }));
+      counter.position.y = 6;
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(10, 1, 10), mat);
+      roof.position.y = 11;
+      
+      // Support poles
+      for(let i=0; i<4; i++) {
+        const pole = new THREE.Mesh(new THREE.BoxGeometry(0.4, 6, 0.4), new THREE.MeshStandardMaterial({ color: '#222' }));
+        pole.position.set(i<2?4.5:-4.5, 8.5, i%2?4.5:-4.5);
+        group.add(pole);
+      }
+      group.add(base, counter, roof);
+    } else if (type === 'Rock' || type === 'Igloo') {
+      const geo = type === 'Rock' ? new THREE.DodecahedronGeometry(5, 1) : new THREE.SphereGeometry(6, 16, 8, 0, Math.PI*2, 0, Math.PI/2);
+      const m = new THREE.Mesh(geo, mat);
+      m.position.y = type === 'Rock' ? 3 : 0;
+      group.add(m);
+    } else if (type === 'Pad' || type === 'DronePod') {
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(8, 10, 2, 6), new THREE.MeshStandardMaterial({ color: '#111', metalness: 1 }));
+      const glow = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.5, 6), new THREE.MeshStandardMaterial({ color: '#00f2ff' }));
+      glow.position.y = 1.1;
+      group.add(base, glow);
+    } else if (type === 'Statue' || type === 'Snowman') {
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(3, 4, 8, 8), mat);
+      body.position.y = 4;
+      const head = new THREE.Mesh(new THREE.SphereGeometry(2.5, 12, 12), mat);
+      head.position.y = 9.5;
+      group.add(body, head);
     } else {
       // Advanced Building with tiered sections
       const h = 30 + Math.random() * 60;
