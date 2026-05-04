@@ -185,6 +185,23 @@ export class LevelGenerator {
 
     const sceneryCount = 50 + level * 8;
     const blocks = 10;
+    
+    // Tier mapping for themed items
+    const itemSpecs: Record<string, { tier: number, mass: number, w: number, h: number, d: number }> = {
+      'House':     { tier: 3, mass: 15000, w: 20, h: 30, d: 20 },
+      'Stall':     { tier: 2, mass: 1200,  w: 6,  h: 8,  d: 6  },
+      'Vendor':    { tier: 2, mass: 1000,  w: 5,  h: 6,  d: 5  },
+      'Tree':      { tier: 2, mass: 800,   w: 4,  h: 12, d: 4  },
+      'SnowTree':  { tier: 2, mass: 800,   w: 4,  h: 12, d: 4  },
+      'Rock':      { tier: 2, mass: 2000,  w: 8,  h: 6,  d: 8  },
+      'Statue':    { tier: 3, mass: 8000,  w: 10, h: 15, d: 10 },
+      'Igloo':     { tier: 2, mass: 3000,  w: 12, h: 6,  d: 12 },
+      'Snowman':   { tier: 1, mass: 500,   w: 4,  h: 8,  d: 4  },
+      'NeonTower': { tier: 5, mass: 80000, w: 25, h: 80, d: 25 },
+      'Pad':       { tier: 3, mass: 5000,  w: 15, h: 4,  d: 15 },
+      'DronePod':  { tier: 3, mass: 6000,  w: 12, h: 10, d: 12 }
+    };
+
     for (let i = 0; i < sceneryCount; i++) {
       const blockIdx = i % blocks;
       const angle  = (blockIdx / blocks) * Math.PI * 2;
@@ -200,11 +217,28 @@ export class LevelGenerator {
       const itemType = theme.items[i % theme.items.length];
       const color = theme.colors[Math.floor(Math.random() * theme.colors.length)];
       
-      const building = this.makeSceneryItem(itemType, color);
-      building.position.set(bx, 0, bz);
-      building.rotation.y = Math.random() * Math.PI * 2;
-      this.scene.add(building);
-      scenery.push(building);
+      const mesh = this.makeSceneryItem(itemType, color);
+      mesh.position.set(bx, 0, bz);
+      mesh.rotation.y = Math.random() * Math.PI * 2;
+      this.scene.add(mesh);
+
+      const spec = itemSpecs[itemType] || { tier: 3, mass: 5000, w: 10, h: 10, d: 10 };
+      
+      // Create Physics Body for scenery
+      const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(bx, spec.h/2, bz);
+      const body = this.physics.world.createRigidBody(bodyDesc);
+      const colliderDesc = RAPIER.ColliderDesc.cuboid(spec.w/2, spec.h/2, spec.d/2);
+      this.physics.world.createCollider(colliderDesc, body);
+
+      objects.push({
+        mesh,
+        body,
+        tier: spec.tier,
+        mass: spec.mass,
+        type: itemType,
+        id: Math.random(),
+        consumed: false
+      });
     }
 
     return { objects, scenery };
