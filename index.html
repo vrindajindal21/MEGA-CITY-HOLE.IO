@@ -1,155 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>MEGA CITY HOLE.IO</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/src/style.css">
-  </head>
-  <body>
-    <div id="app">
-      <!-- Loading Screen -->
-      <div id="loading-screen" class="overlay">
-        <h1 class="game-title">LOADING<br><span>CITY...</span></h1>
-        <div class="xp-bar-mini" style="width: 200px; height: 12px;"><div id="loading-fill" style="width: 100%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); animation: pulse 1.5s infinite;"></div></div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hole.IO" />
+  <meta name="theme-color" content="#ff3e00" />
+  <meta name="description" content="MEGA CITY HOLE.IO — Swallow the city! The ultimate hole.io experience on mobile." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>MEGA CITY HOLE.IO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="overlay">
+      <h1 class="game-title">MEGA CITY<br><span>HOLE.IO</span></h1>
+      <div class="loading-bar-wrap">
+        <div id="loading-fill"></div>
+      </div>
+      <p class="loading-hint">Loading city...</p>
+    </div>
+
+    <!-- Game Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="overlay hidden">
+      <div class="user-stats">
+        <div class="level-badge">LVL <span id="player-level">1</span></div>
+        <div class="xp-bar-mini">
+          <div id="xp-fill"></div>
+        </div>
+        <div class="menu-coins-badge">🪙 <span id="menu-coins">0</span></div>
       </div>
 
-      <!-- Game Canvas Container -->
-      <div id="canvas-container"></div>
+      <h1 class="game-title">MEGA CITY<br><span>HOLE.IO</span></h1>
 
-      <div id="main-menu" class="overlay">
-        <div class="user-stats">
-          <div class="level-badge">LVL <span id="player-level">1</span></div>
-          <div class="xp-bar-mini"><div id="xp-fill"></div></div>
-        </div>
-        <h1 class="game-title">MEGA CITY<br><span>HOLE.IO</span></h1>
-        <div class="menu-content">
-          <button id="play-button" class="btn-primary">PLAY MATCH</button>
-          
-          <!-- Game Mode Selection -->
-          <div id="mode-selection" class="mode-selection hidden">
-            <h3>SELECT GAME MODE</h3>
-            <div class="modes-grid">
-              <button id="mode-solo" class="mode-card">
-                <div class="mode-icon">🎯</div>
-                <div class="mode-name">SOLO</div>
-                <div class="mode-desc">Consume 100% of the city</div>
-                <div class="mode-time">2 minutes</div>
-              </button>
-              <button id="mode-classic" class="mode-card">
-                <div class="mode-icon">🏆</div>
-                <div class="mode-name">CLASSIC</div>
-                <div class="mode-desc">Largest hole by time end</div>
-                <div class="mode-time">2 minutes</div>
-              </button>
-              <button id="mode-battle" class="mode-card">
-                <div class="mode-icon">⚔️</div>
-                <div class="mode-name">BATTLE</div>
-                <div class="mode-desc">Last hole standing</div>
-                <div class="mode-time">No time limit</div>
-              </button>
-            </div>
-            <button id="back-to-menu" class="btn-secondary">BACK</button>
-          </div>
-          <div class="upgrades-grid">
-            <div class="upgrade-card" id="upg-speed">
-              <span class="upg-label">SPEED</span>
-              <span class="upg-val">LVL 1</span>
-            </div>
-            <div class="upgrade-card" id="upg-size">
-              <span class="upg-label">SIZE</span>
-              <span class="upg-val">LVL 1</span>
-            </div>
-            <div class="upgrade-card" id="upg-suction">
-              <span class="upg-label">SUCTION</span>
-              <span class="upg-val">LVL 1</span>
-            </div>
-          </div>
-          <div class="menu-bottom">
-            <button id="skins-button" class="btn-secondary">SKINS</button>
-            <button id="maps-button" class="btn-secondary">MAPS</button>
-          </div>
-        </div>
-      </div>
+      <div class="menu-content">
+        <button id="play-button" class="btn-primary pulse-glow">PLAY MATCH</button>
 
-      <!-- In-Game HUD -->
-      <div id="game-hud" class="overlay hidden">
-        <div class="hud-top">
-          <div class="timer-container">
-            <span id="timer">01:30</span>
+        <!-- Game Mode Selection -->
+        <div id="mode-selection" class="mode-selection hidden">
+          <h3>SELECT GAME MODE</h3>
+          <div class="modes-grid">
+            <button id="mode-solo" class="mode-card">
+              <div class="mode-icon">🎯</div>
+              <div class="mode-name">SOLO</div>
+              <div class="mode-desc">Consume 100% of the city</div>
+              <div class="mode-time">2 minutes</div>
+            </button>
+            <button id="mode-classic" class="mode-card">
+              <div class="mode-icon">🏆</div>
+              <div class="mode-name">CLASSIC</div>
+              <div class="mode-desc">Biggest hole wins</div>
+              <div class="mode-time">2 minutes</div>
+            </button>
+            <button id="mode-battle" class="mode-card">
+              <div class="mode-icon">⚔️</div>
+              <div class="mode-name">BATTLE</div>
+              <div class="mode-desc">Last hole standing</div>
+              <div class="mode-time">No limit</div>
+            </button>
+            <button id="mode-daily" class="mode-card daily-card">
+              <div class="mode-icon">📅</div>
+              <div class="mode-name">DAILY</div>
+              <div class="mode-desc">Fixed seed challenge</div>
+              <div class="mode-time" id="daily-time">Today's run</div>
+            </button>
           </div>
-          <div class="fever-container">
-            <div id="fever-bar"></div>
-            <span class="fever-label">FEVER</span>
-          </div>
-          <div class="leaderboard-mini">
-            <div class="mini-entry player">1. YOU - 0</div>
-            <div class="mini-entry">2. B0T_ALPHA - 0</div>
-            <div class="mini-entry">3. B0T_BETA - 0</div>
-          </div>
+          <button id="back-to-menu" class="btn-secondary">BACK</button>
         </div>
-        
-        <div class="hud-bottom">
-          <div class="growth-bar-container">
-            <div id="growth-bar"></div>
-            <div class="size-label">SIZE <span id="size-tier">1</span></div>
+
+        <!-- Upgrades -->
+        <div class="upgrades-grid">
+          <div class="upgrade-card" id="upg-speed">
+            <span class="upg-icon">⚡</span>
+            <span class="upg-label">SPEED</span>
+            <span class="upg-val">LVL 1</span>
           </div>
-          <div class="score-container">
-            <span id="score">0000</span>
-            <span id="solo-pct" class="hidden" style="font-size: 1rem; opacity: 0.7; margin-left: 5px;">0%</span>
+          <div class="upgrade-card" id="upg-size">
+            <span class="upg-icon">🕳️</span>
+            <span class="upg-label">SIZE</span>
+            <span class="upg-val">LVL 1</span>
           </div>
-          <div class="coin-container">
-            <span class="coin-icon">🪙</span>
-            <span id="coins">0</span>
+          <div class="upgrade-card" id="upg-suction">
+            <span class="upg-icon">🌀</span>
+            <span class="upg-label">SUCTION</span>
+            <span class="upg-val">LVL 1</span>
           </div>
         </div>
 
-        <!-- Combo Feedback -->
-        <div id="combo-feedback" class="combo-text">COMBO x2!</div>
-        
-        <!-- Growth Feedback -->
-        <div id="growth-feedback" class="growth-text">SIZE UP!</div>
-        
-        <!-- Size Milestone Indicator -->
-        <div id="size-milestone" class="milestone-text">
-          <div class="milestone-icon">🎯</div>
-          <div class="milestone-label">NEW TIER!</div>
+        <div class="menu-bottom">
+          <button id="skins-button" class="btn-secondary">🎨 SKINS</button>
+          <button id="settings-button" class="btn-secondary">⚙️</button>
         </div>
-      </div>
-
-      <!-- End Screen -->
-      <div id="end-screen" class="overlay hidden">
-        <div class="end-content">
-          <div class="progression-summary">
-            <h2 id="end-rank">RANK #1</h2>
-            <p id="rank-context">You were 92% away from Rank #1</p>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-label">SCORE</span>
-              <span id="end-score" class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">XP GAINED</span>
-              <span id="end-xp" class="stat-value">+0</span>
-            </div>
-          </div>
-          <div class="rewarded-cta">
-            <button id="revive-button" class="btn-rewarded">WATCH AD: REVIVE +30S</button>
-          </div>
-          <button id="again-button" class="btn-primary">INSTANT REPLAY</button>
-        </div>
-      </div>
-
-      <!-- Level Up Moment -->
-      <div id="level-up" class="moment hidden">
-        <h2>GIANT GROWTH!</h2>
       </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+    <!-- Skins Panel -->
+    <div id="skins-panel" class="overlay hidden">
+      <div class="panel-content">
+        <h2>🎨 HOLE SKINS</h2>
+        <div class="skins-grid" id="skins-grid"></div>
+        <button id="close-skins" class="btn-primary">DONE</button>
+      </div>
+    </div>
+
+    <!-- Settings Menu -->
+    <div id="settings-menu" class="overlay hidden">
+      <div class="settings-content">
+        <h2>SETTINGS</h2>
+        <div class="setting-item">
+          <label>MUSIC VOLUME</label>
+          <input type="range" id="music-vol" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        <div class="setting-item">
+          <label>SFX VOLUME</label>
+          <input type="range" id="sfx-vol" min="0" max="1" step="0.1" value="0.6">
+        </div>
+        <div class="setting-item">
+          <label>HIGH SCORE</label>
+          <span id="high-score-display" style="font-size:1.2rem;font-weight:900;color:var(--gold)">0</span>
+        </div>
+        <div class="setting-item">
+          <button id="reset-progress" class="btn-secondary"
+            style="background:rgba(255,62,0,0.3);border-color:#ff3e00;">RESET PROGRESS</button>
+        </div>
+        <button id="close-settings" class="btn-primary">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Onboarding -->
+    <div id="onboarding" class="overlay hidden">
+      <div class="onboarding-content">
+        <div class="onboarding-animation">
+          <div class="hand-icon">👆</div>
+        </div>
+        <h3>DRAG TO MOVE</h3>
+        <p>Use the joystick on mobile!<br>Consume objects to grow larger!</p>
+        <p style="font-size:0.8rem;opacity:0.6;margin-top:-8px">Eat smaller holes to eliminate them!</p>
+        <button id="start-onboarding" class="btn-primary">GOT IT!</button>
+      </div>
+    </div>
+
+    <!-- In-Game HUD -->
+    <div id="game-hud" class="hud-overlay hidden">
+      <div class="hud-top">
+        <div class="timer-container">
+          <span class="timer-label">TIME</span>
+          <span id="timer">02:00</span>
+        </div>
+
+        <div class="fever-wrapper">
+          <span class="fever-label">🔥 FEVER</span>
+          <div class="fever-container">
+            <div id="fever-bar"></div>
+          </div>
+        </div>
+
+        <div class="leaderboard-mini" id="leaderboard-mini">
+          <div class="mini-entry player">1. YOU — 0</div>
+        </div>
+
+        <div id="mission-container" class="mission-box">
+          <div class="mission-header">CURRENT MISSION</div>
+          <div id="mission-text" class="mission-content">Eat 10 Cars!</div>
+          <div class="mission-progress-bg">
+            <div id="mission-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <canvas id="minimap" width="120" height="120"></canvas>
+        <div class="minimap-label">MAP</div>
+      </div>
+
+      <div class="hud-bottom">
+        <div class="growth-bar-container">
+          <div class="size-label">SIZE <span id="size-tier">1</span></div>
+          <div id="growth-bar"></div>
+          <div class="target-indicator" id="target-score-indicator">TARGET: 2000</div>
+        </div>
+        <div class="score-container">
+          <span id="score">0000</span>
+          <span id="solo-pct" class="hidden">0%</span>
+        </div>
+        <div class="coin-container">
+          <span class="coin-icon">🪙</span>
+          <span id="coins">0</span>
+        </div>
+      </div>
+
+      <!-- Feedback overlays -->
+      <div id="fever-vignette" class="fever-vignette hidden"></div>
+      <div id="speed-lines" class="speed-lines hidden"></div>
+      <div id="combo-feedback" class="combo-text" style="opacity:0">COMBO x2!</div>
+      <div id="growth-feedback" class="growth-text" style="opacity:0">SIZE UP!</div>
+      <div id="size-milestone" class="milestone-text hidden">
+        <div class="milestone-icon">🎯</div>
+        <div class="milestone-label">NEW TIER!</div>
+      </div>
+    </div>
+
+    <!-- Virtual Joystick -->
+    <div id="joystick-zone" class="hidden">
+      <div id="joystick-thumb"></div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="end-screen" class="overlay hidden">
+      <div class="end-content">
+        <h2 id="end-rank">RANK #1</h2>
+        <p id="rank-context" style="opacity:0.7;margin-bottom:16px">—</p>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">SCORE</span>
+            <span id="end-score" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">XP GAINED</span>
+            <span id="end-xp" class="stat-value">+0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">COINS EARNED</span>
+            <span id="end-coins" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">HIGH SCORE</span>
+            <span id="end-highscore" class="stat-value">0</span>
+          </div>
+        </div>
+        <div class="end-buttons">
+          <button id="share-button" class="btn-secondary">📤 SHARE</button>
+          <button id="revive-button" class="btn-secondary">📺 REVIVE +30S</button>
+        </div>
+        <button id="next-level-button" class="btn-primary hidden">NEXT LEVEL 🚀</button>
+        <button id="again-button" class="btn-primary">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <!-- Level-up / Fever Moment -->
+    <div id="level-up" class="moment hidden">
+      <h2>GIANT GROWTH!</h2>
+    </div>
+
+    <!-- Level indicator in HUD -->
+    <div id="level-indicator" class="level-indicator hidden">
+      <span>LVL <span id="hud-level">1</span></span>
+    </div>
+
+    <!-- Screen Transition -->
+    <div id="screen-fade" class="screen-fade hidden"></div>
+
+  </div>
+  <script type="module" src="/src/index.ts"></script>
+</body>
+
 </html>

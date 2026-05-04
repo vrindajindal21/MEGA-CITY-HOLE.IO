@@ -1,0 +1,13 @@
+{
+  "name": "MEGA CITY HOLE.IO",
+  "short_name": "Hole.IO",
+  "description": "Swallow the city! The ultimate hole.io experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#ff3e00",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
