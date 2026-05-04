@@ -79,8 +79,8 @@ export class LevelGenerator {
     tiers.push({ name: 'Car',         count: Math.floor(15 * countMultiplier),  w: 4.5, h: 2.2, d: 2.5, mass: 2000,  color: '#ffdd00', tierIdx: 2 });
     tiers.push({ name: 'Streetlight', count: Math.floor(20 * countMultiplier),  w: 1.0, h: 8.0, d: 1.0, mass: 500,   color: '#333',     tierIdx: 1 });
     tiers.push({ name: 'Bench',       count: Math.floor(25 * countMultiplier),  w: 3.5, h: 1.2, d: 1.5, mass: 400,   color: '#8B4513', tierIdx: 1 });
-    tiers.push({ name: 'Stall',       count: Math.floor(15 * countMultiplier),  w: 5.0, h: 4.0, d: 5.0, mass: 1200,  color: '#FFB7C5', tierIdx: 2 });
-    tiers.push({ name: 'Vendor',      count: Math.floor(12 * countMultiplier),  w: 4.0, h: 3.5, d: 4.0, mass: 1000,  color: '#E6E6FA', tierIdx: 2 });
+    tiers.push({ name: 'Stall',       count: Math.floor(15 * countMultiplier),  w: 10.0, h: 11.0, d: 10.0, mass: 1200,  color: '#FFB7C5', tierIdx: 2 });
+    tiers.push({ name: 'Vendor',      count: Math.floor(12 * countMultiplier),  w: 10.0, h: 11.0, d: 10.0, mass: 1000,  color: '#E6E6FA', tierIdx: 2 });
 
     // Spawn items in organized clusters
     tiers.forEach(tier => {
@@ -109,8 +109,8 @@ export class LevelGenerator {
           
           if (pattern === 'grid') {
             const cols = Math.ceil(Math.sqrt(itemsPerCluster));
-            ox = ((i % cols) - cols / 2) * (tier.w * 1.5);
-            oz = (Math.floor(i / cols) - cols / 2) * (tier.d * 1.5);
+            ox = ((i % cols) - cols / 2) * (tier.w * 1.8);
+            oz = (Math.floor(i / cols) - cols / 2) * (tier.d * 1.8);
           } else if (pattern === 'circle') {
             const pAngle = t * Math.PI * 2;
             const pDist  = (tier.w * 1.2) * (1 + Math.floor(i / 8));
@@ -189,9 +189,9 @@ export class LevelGenerator {
     // Tier mapping for themed items
     const itemSpecs: Record<string, { tier: number, mass: number, w: number, h: number, d: number }> = {
       'House':     { tier: 3, mass: 15000, w: 20, h: 30, d: 20 },
-      'Stall':     { tier: 2, mass: 1200,  w: 6,  h: 8,  d: 6  },
-      'Vendor':    { tier: 2, mass: 1000,  w: 5,  h: 6,  d: 5  },
-      'Tree':      { tier: 2, mass: 800,   w: 4,  h: 12, d: 4  },
+      'Stall':     { tier: 2, mass: 1200,  w: 10, h: 11, d: 10 },
+      'Vendor':    { tier: 2, mass: 1000,  w: 10, h: 11, d: 10 },
+      'Tree':      { tier: 2, mass: 800,   w: 6,  h: 12, d: 6  },
       'SnowTree':  { tier: 2, mass: 800,   w: 4,  h: 12, d: 4  },
       'Rock':      { tier: 2, mass: 2000,  w: 8,  h: 6,  d: 8  },
       'Statue':    { tier: 3, mass: 8000,  w: 10, h: 15, d: 10 },
